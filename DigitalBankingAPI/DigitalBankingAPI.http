@@ -1,0 +1,6 @@
+@DigitalBankingAPI_HostAddress = http://localhost:5215
+
+GET {{DigitalBankingAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

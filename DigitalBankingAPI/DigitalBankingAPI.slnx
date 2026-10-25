@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../DigitalBankingAPI.Tests/DigitalBankingAPI.Tests.csproj" />
+  <Project Path="DigitalBankingAPI.csproj" />
+</Solution>
