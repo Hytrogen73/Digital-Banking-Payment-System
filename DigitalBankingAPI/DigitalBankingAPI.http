@@ -4,3 +4,8 @@ GET {{DigitalBankingAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts 
+Accept: application/json 
+###
+GET {{DigitalBankingAPI_HostAddress}}/api/auth/test 
+Accept: application/json

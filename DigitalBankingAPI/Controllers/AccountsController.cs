@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata.Ecma335;
+using System.Reflection;
 using DigitalBankingAPI.Models;
 
 namespace DigitalBankingAPI.Controllers
@@ -16,8 +16,8 @@ namespace DigitalBankingAPI.Controllers
         {
             var accounts = new[]
             {
-                new Account( 5, 100.00m),
-                new Account( 10, 200.00m),
+                new Account( 5,001 ,100.00m),
+                new Account( 10, 001, 200.00m),
             };
             return Ok(accounts);
         }

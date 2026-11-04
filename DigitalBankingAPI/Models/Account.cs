@@ -3,13 +3,18 @@
 public class Account
 {
     public int Id { get; private set; }
+    public int UserId { get; private set; }
     public decimal Balance { get; private set; }
 
-    public Account(int id, decimal initialBalance)
+    public Account(int id, int userId, decimal initialBalance)
     {
         if (id == 0 || id <0)
         {
             throw new ArgumentException("Account ID must be positive.");
+        }
+        if(userId == 0  || userId < 0)
+        {
+            throw new ArgumentException("User ID must be positive nor Valid.");
         }
         if (initialBalance < 0)
         {
@@ -17,6 +22,7 @@ public class Account
         }
         Id = id;
         Balance = initialBalance;
+        UserId = userId;
     }
     public bool Deposit(decimal amount)
     {
