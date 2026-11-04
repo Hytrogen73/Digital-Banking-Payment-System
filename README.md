@@ -44,7 +44,17 @@ The application aims to allow users to manage their accounts, view balances, tra
 
 ## Project Status
 
-Currently in the early development stage. The ASP.NET Core Web API project has been created, the initial Account model and accounts endpoint are implemented, and three unit tests have passed. The initial code has been pushed to GitHub. Database integration, authentication, and the remaining core banking features are still in progress.
+Currently in development.
+
+### Completed
+- ASP.NET Core Web API setup
+- Account model and validation
+- Unit tests for account operations
+- Dependency Injection setup
+
+### In Progress
+- Authentication and authorization
+- Database integratio
 
 ## Project Purpose
 
