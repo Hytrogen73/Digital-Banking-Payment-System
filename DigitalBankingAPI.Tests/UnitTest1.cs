@@ -7,17 +7,18 @@ namespace DigitalBankingAPI.Tests;
 public class UnitTest1
 {
     [Fact]
-    public void Withdraw_InsufficientBalance_ReturnFalse()
+    public void Withdraw_InsufficientBalance_ThrowsException()
     {
         // Arrange
-        var account = new Account(15,1, 200.00m);
+        var account = new Account(15,1, 2000.00m);
 
         // Act
-        bool result = account.Withdraw(250.00m);
+      
 
         // Assert
-        Assert.False(result);
-        Assert.Equal(200.00m, account.Balance);
+        Assert.Throws<InvalidOperationException>(
+            () => account.Withdraw(2300m));
+        Assert.Equal(2000.00m, account.Balance);
     }
     [Fact]
     public void Withdraw_ValidAmount_ReducesBalance()

@@ -55,7 +55,6 @@ Currently in development.
 ### In Progress
 - Authentication and authorization
 - Database integratio
-
 ## Project Purpose
 
 This project aims to demonstrate mobile application development, backend API development, database management, authentication, and secure transaction processing.

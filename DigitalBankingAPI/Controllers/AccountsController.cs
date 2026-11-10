@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using DigitalBankingAPI.Models;
 
-namespace DigitalBankingAPI.Controllers
-{
+namespace DigitalBankingAPI.Controllers;
+
     [ApiController]
     [Route("api/[controller]")]
     
@@ -23,4 +23,4 @@ namespace DigitalBankingAPI.Controllers
         }
 
     }
-}
+
