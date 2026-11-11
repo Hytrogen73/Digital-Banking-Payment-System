@@ -46,15 +46,27 @@ The application aims to allow users to manage their accounts, view balances, tra
 
 Currently in development.
 
-### Completed
-- ASP.NET Core Web API setup
-- Account model and validation
-- Unit tests for account operations
-- Dependency Injection setup
+### Development Progress
 
-### In Progress
-- Authentication and authorization
-- Database integratio
+**Completed:**
+- Set up ASP.NET Core Web API.
+- Implemented Account and User models with validation.
+- Implemented password hashing using ASP.NET Core PasswordHasher.
+- Configured Dependency Injection.
+- Added unit tests for Account and User models.
+- Installed and configured Entity Framework Core with SQL Server.
+- Created AppDbContext for Users and Accounts.
+- Created the InitialCreate migration.
+- Successfully created DigitalBankingDB with Users and Accounts tables.
+
+**Current Stage:**
+- Preparing to integrate real SQL Server data into API controllers.
+
+**Next Steps:**
+- Retrieve account data from SQL Server using Entity Framework Core.
+- Implement database operations for accounts and users.
+- Continue developing authentication and banking features.
+
 ## Project Purpose
 
 This project aims to demonstrate mobile application development, backend API development, database management, authentication, and secure transaction processing.
