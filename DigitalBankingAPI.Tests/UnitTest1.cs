@@ -49,5 +49,26 @@ public class UnitTest1
         Assert.False(result);
         Assert.Equal(190.00m , account.Balance);
     }
+    [Fact]
+
+    public void InvalidUserId_ThrowsExceptions()
+    {
+
+        int id = 0;
+        string username = "Julia";
+
+
+        Assert.Throws<ArgumentException>(
+           () => new User(id, username ) );
+    }
+    [Fact]
+
+    public void InvalidUsername_ThrowsExceptions()
+    {
+        int id = 1;
+        string username = "";
+
+        Assert.Throws<ArgumentException>(() => new User(id, username ) );
+    }
     
 }

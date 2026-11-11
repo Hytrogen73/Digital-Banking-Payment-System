@@ -15,7 +15,7 @@ public class Account
         {
             throw new ArgumentException("Account ID must be positive.");
         }
-        if(userId == 0  || userId < 0)
+        if(userId <= 0)
         {
             throw new ArgumentException("User ID must be positive.");
         }
