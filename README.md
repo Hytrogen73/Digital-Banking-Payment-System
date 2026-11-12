@@ -63,6 +63,11 @@ Currently in development.
 - Implemented an API endpoint to retrieve an account by ID.
 - Implemented an API endpoint to create a new account.
 - Tested successful account creation and account retrieval, including the 404 Not Found response for an account that does not exist.
+- Implemented Deposit API endpoint with EF Core.
+- Implemented Withdraw API endpoint with exception handling.
+- Added account balance validation for deposit and withdrawal operations.
+- Tested successful and invalid deposit and withdrawal requests.
+- Expanded unit tests from 5 to 7, with all tests passing.
 
 **Current Stage:**
 - Developing database operations through ASP.NET Core API controllers.

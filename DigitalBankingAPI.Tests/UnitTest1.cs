@@ -1,5 +1,4 @@
 ﻿using DigitalBankingAPI.Models;
-using System.Reflection.Emit;
 using Xunit;
 
 namespace DigitalBankingAPI.Tests;
@@ -70,5 +69,31 @@ public class UnitTest1
 
         Assert.Throws<ArgumentException>(() => new User(id, username ) );
     }
-    
+    [Fact]
+    public void Deposit_ValidAmount_IncreasesBalance()
+    {
+        // Arrange
+        var account = new Account(1, 500m);
+
+        // Act
+        bool result = account.Deposit(100m);
+
+        // Assert
+        Assert.True(result);
+        Assert.Equal(600m, account.Balance);
+    }
+    [Fact]
+    public void Deposit_ZeroAmount_ReturnFalse()
+    {
+        // Arrange
+        var account = new Account(1, 500m);
+
+        // Act
+        bool result = account.Deposit(0m);
+
+        // Assert
+        Assert.False(result);
+        Assert.Equal(500m, account.Balance);
+    }
+
 }
