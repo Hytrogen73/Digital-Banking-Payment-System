@@ -1,25 +1,41 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
+﻿using Microsoft.AspNetCore.Mvc;
 using DigitalBankingAPI.Models;
+using DigitalBankingAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalBankingAPI.Controllers;
 
-    [ApiController]
-    [Route("api/[controller]")]
-    
-    public class AccountsController : ControllerBase
+[ApiController]
+[Route("api/[controller]")]
+
+public class AccountsController : ControllerBase
+{
+
+    private readonly AppDbContext _context;
+    public AccountsController(AppDbContext context)
     {
-        [HttpGet]
-        public IActionResult GetAccounts()
+        _context = context;
+    }
+
+    [HttpGet("{id}")]
+        public async Task<IActionResult> GetAccounts(int id)
         {
-            var accounts = new[]
+            var account = await _context.Accounts.FirstOrDefaultAsync(
+                a=> a.Id==id);
+            if (account == null )
             {
-                new Account( 5,001 ,100.00m),
-                new Account( 10, 001, 200.00m),
-            };
-            return Ok(accounts);
+                return NotFound();
+            }
+            return Ok(account);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateAccount(CreateAccountRequest request)
+        {
+            var account = new Account(request.UserId, request.Balance);
+            _context.Accounts.Add(account);
+            await _context.SaveChangesAsync();
+            return StatusCode(201,account);
+            
         }
 
     }

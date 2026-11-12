@@ -9,12 +9,9 @@ public class Account
     {
 
     }
-    public Account(int id, int userId, decimal balance)
+    public Account( int userId, decimal balance)
     {
-        if (id <= 0)
-        {
-            throw new ArgumentException("Account ID must be positive.");
-        }
+      
         if(userId <= 0)
         {
             throw new ArgumentException("User ID must be positive.");
@@ -23,7 +20,7 @@ public class Account
         {
             throw new ArgumentException("Initial balance cannot be negative.");
         }
-        Id = id;
+      
         Balance = balance;
         UserId = userId;
     }

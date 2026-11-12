@@ -58,14 +58,22 @@ Currently in development.
 - Created AppDbContext for Users and Accounts.
 - Created the InitialCreate migration.
 - Successfully created DigitalBankingDB with Users and Accounts tables.
+- Connected API controllers to SQL Server using Entity Framework Core.
+- Implemented an API endpoint to retrieve all accounts.
+- Implemented an API endpoint to retrieve an account by ID.
+- Implemented an API endpoint to create a new account.
+- Tested successful account creation and account retrieval, including the 404 Not Found response for an account that does not exist.
 
 **Current Stage:**
-- Preparing to integrate real SQL Server data into API controllers.
+- Developing database operations through ASP.NET Core API controllers.
+- Building the foundation for account management using Entity Framework Core.
 
 **Next Steps:**
-- Retrieve account data from SQL Server using Entity Framework Core.
-- Implement database operations for accounts and users.
-- Continue developing authentication and banking features.
+- Implement account balance update operations.
+- Improve input validation and error handling.
+- Develop user registration and login endpoints.
+- Implement JWT authentication and authorization.
+- Continue developing banking features.
 
 ## Project Purpose
 

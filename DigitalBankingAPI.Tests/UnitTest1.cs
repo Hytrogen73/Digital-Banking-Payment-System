@@ -10,7 +10,7 @@ public class UnitTest1
     public void Withdraw_InsufficientBalance_ThrowsException()
     {
         // Arrange
-        var account = new Account(15,1, 2000.00m);
+        var account = new Account(1, 2000.00m);
 
         // Act
       
@@ -24,7 +24,7 @@ public class UnitTest1
     public void Withdraw_ValidAmount_ReducesBalance()
     {
         //arrage 
-        var account = new Account(35,1, 2000.00m);
+        var account = new Account(1, 2000.00m);
 
         //Act
         bool result = account.Withdraw(300m);
@@ -38,7 +38,7 @@ public class UnitTest1
     public  void Deposit_NegativeAmount_ReturnFalse()
     {
         //Arrage (set-up)
-        var account = new Account(20,1,190.00m);
+        var account = new Account(1,190.00m);
 
         //Act(Operation)
 

@@ -4,8 +4,15 @@ GET {{DigitalBankingAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
-GET {{DigitalBankingAPI_HostAddress}}/api/accounts 
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts/2 
 Accept: application/json 
 ###
 GET {{DigitalBankingAPI_HostAddress}}/api/auth/test 
 Accept: application/json
+###
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts
+Content-type: application/json
+{
+  "userId" : 1,
+  "balance": 500.00
+}
