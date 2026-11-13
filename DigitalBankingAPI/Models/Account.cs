@@ -1,10 +1,15 @@
-﻿namespace DigitalBankingAPI.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DigitalBankingAPI.Models;
+
 
 public class Account
 {
     public int Id { get; private set; }
     public int UserId { get; private set; }
     public decimal Balance { get; private set; }
+    [Timestamp]
+    public byte[] RowVersion { get; private set; } = null!;
     private Account()
     {
 

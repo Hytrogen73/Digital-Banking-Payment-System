@@ -83,6 +83,71 @@ public class AccountsController : ControllerBase
 
     }
 
+    [HttpPost("{id}/transfer")]
+    public async Task<IActionResult> Transfer(int id, TransferRequest request)
+    {
+        
+        if (id == request.ToAccountId)
+            return BadRequest("Cannot transfer to the same account.");
+
+        var sender = await _context.Accounts
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        if (sender == null)
+            return NotFound("Sender account not found.");
+
+        
+        var receiver = await _context.Accounts
+            .FirstOrDefaultAsync(a => a.Id == request.ToAccountId);
+
+        if (receiver == null)
+            return NotFound("Receiver account not found.");
+
+       
+        await using var transaction =
+            await _context.Database.BeginTransactionAsync();
+        try
+        {
+            sender.Withdraw(request.Amount);
+
+            bool result = receiver.Deposit(request.Amount);
+            if (!result)
+            {
+                await transaction.RollbackAsync();
+                return BadRequest("Transfer failed.");
+            }
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return Ok(new
+            {
+                Message = "Transfer successful.",
+                SenderBalance = sender.Balance,
+                ReceiverBalance = receiver.Balance
+            });
+        }
+        catch (ArgumentException ex)
+        {
+            await transaction.RollbackAsync();
+            return BadRequest(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            await transaction.RollbackAsync();
+            return BadRequest(ex.Message);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            await transaction.RollbackAsync();
+            return Conflict("Transfer failed becuase an account was modified by another transaction. Please try again.");
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
 
 }
 

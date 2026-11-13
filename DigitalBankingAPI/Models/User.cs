@@ -22,6 +22,15 @@ public class User
         Id = id;
         Username = username;
     }
+    public User(string username)
+    {
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            throw new ArgumentException("Username cannot be empty.");
+        }
+
+        Username = username;
+    }
     public void SetPasswordHash(string passwordHash)
     {
         PasswordHash = passwordHash;

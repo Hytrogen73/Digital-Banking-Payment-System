@@ -14,17 +14,24 @@ POST {{DigitalBankingAPI_HostAddress}}/api/accounts
 Content-type: application/json
 {
   "userId" : 1,
-  "balance": 500.00
+  "balance": 200.00
 }
 ###
 POST {{DigitalBankingAPI_HostAddress}}/api/accounts/2/deposit
 Content-Type: application/json
 {
-  "amount" : 0
+  "amount" : 50
 }
 ###
 POST {{DigitalBankingAPI_HostAddress}}/api/accounts/2/withdraw
 Content-type: application/json
 {
-  "amount": 6000
+  "amount": 5000
+}
+### 
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/2/transfer
+Content-type: application/json 
+{
+  "toAccountId" : 3,
+  "amount" : 10
 }
