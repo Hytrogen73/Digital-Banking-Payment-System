@@ -35,3 +35,25 @@ Content-type: application/json
   "toAccountId" : 3,
   "amount" : 10
 }
+###
+POST {{DigitalBankingAPI_HostAddress}}/api/auth/register
+Content-type: application/json
+{
+  "username": "davith_test",
+  "password": "Banking123!"
+}
+###
+POST {{DigitalBankingAPI_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "davith_test",
+  "password": "AnotherPassword123!"
+}
+###
+POST {{DigitalBankingAPI_HostAddress}}/api/auth/register
+Content-type: application/json
+{
+  "username": "ab",
+  "password": "123"
+}

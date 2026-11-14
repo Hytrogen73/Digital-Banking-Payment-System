@@ -5,7 +5,7 @@ namespace DigitalBankingAPI.Services
     public class AuthService
     {
         private readonly PasswordHasher<User> _passwordHasher = new();
-        public bool VerifiyPassword(User user, string password)
+        public bool VerifyPassword(User user, string password)
         {
             var result = _passwordHasher.VerifyHashedPassword(
                 user,
