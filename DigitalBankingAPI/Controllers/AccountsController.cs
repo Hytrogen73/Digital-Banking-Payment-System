@@ -2,13 +2,14 @@
 using DigitalBankingAPI.Models;
 using DigitalBankingAPI.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Security.AccessControl;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace DigitalBankingAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-
+[Authorize]
 public class AccountsController : ControllerBase
 {
 
@@ -21,27 +22,42 @@ public class AccountsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAccounts(int id)
     {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!int.TryParse(userIdClaim, out int userId))
+            return Unauthorized();
         var account = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == id);
+        a => a.Id == id && a.UserId == userId);
         if (account == null)
         {
             return NotFound();
         }
         return Ok(account);
     }
+
     [HttpPost]
     public async Task<IActionResult> CreateAccount(CreateAccountRequest request)
     {
-        var account = new Account(request.UserId, request.Balance);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!int.TryParse(userIdClaim, out int userId))
+            return Unauthorized();
+        var account = new Account(userId, request.Balance);
         _context.Accounts.Add(account);
         await _context.SaveChangesAsync();
         return StatusCode(201, account);
 
     }
+
     [HttpPost("{id}/deposit")]
     public async Task<IActionResult> Deposit(int id, AccountAmountRequest request)
     {
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!int.TryParse(userIdClaim, out int userId))
+            return Unauthorized();
+        var account = await _context.Accounts.FirstOrDefaultAsync(
+        a => a.Id == id && a.UserId == userId);
 
         if (account == null)
         {
@@ -56,12 +72,18 @@ public class AccountsController : ControllerBase
 
         return Ok(result);
     }
+
     [HttpPost("{id}/withdraw")]
     public async Task<IActionResult> Withdraw(int id, AccountAmountRequest request)
     {
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if(account == null)
+        if (!int.TryParse(userIdClaim, out int userId))
+            return Unauthorized();
+        var account = await _context.Accounts.FirstOrDefaultAsync(
+        a => a.Id == id && a.UserId == userId);
+
+        if (account == null)
         {
             return NotFound();
         }
@@ -86,24 +108,27 @@ public class AccountsController : ControllerBase
     [HttpPost("{id}/transfer")]
     public async Task<IActionResult> Transfer(int id, TransferRequest request)
     {
-        
+
         if (id == request.ToAccountId)
             return BadRequest("Cannot transfer to the same account.");
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+        if (!int.TryParse(userIdClaim, out int userId))
+            return Unauthorized();
         var sender = await _context.Accounts
-            .FirstOrDefaultAsync(a => a.Id == id);
+            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
         if (sender == null)
             return NotFound("Sender account not found.");
 
-        
+
         var receiver = await _context.Accounts
             .FirstOrDefaultAsync(a => a.Id == request.ToAccountId);
 
         if (receiver == null)
             return NotFound("Receiver account not found.");
 
-       
+
         await using var transaction =
             await _context.Database.BeginTransactionAsync();
         try

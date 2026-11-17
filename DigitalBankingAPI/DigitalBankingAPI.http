@@ -1,4 +1,4 @@
-@DigitalBankingAPI_HostAddress = http://localhost:5215
+@DigitalBankingAPI_HostAddress = https://localhost:7223
 
 GET {{DigitalBankingAPI_HostAddress}}/weatherforecast/
 Accept: application/json
@@ -47,7 +47,7 @@ POST {{DigitalBankingAPI_HostAddress}}/api/auth/register
 Content-Type: application/json
 
 {
-  "username": "davith_test",
+  "username": "test_user_d",
   "password": "AnotherPassword123!"
 }
 ###
@@ -56,4 +56,19 @@ Content-type: application/json
 {
   "username": "ab",
   "password": "123"
+}
+###
+POST {{DigitalBankingAPI_HostAddress}}/api/auth/login
+Content-type: application/json
+{
+  "username": "test_user_a",
+  "password": "AnotherPassword123!"
+}
+### Create account for User A
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTQ5MzMyMjAsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.JnBNqFCv7kVB--12hP-Dc-7h3eqKv_FzWEMxacsFiME
+Content-Type: application/json
+
+{
+  "balance": 500
 }
