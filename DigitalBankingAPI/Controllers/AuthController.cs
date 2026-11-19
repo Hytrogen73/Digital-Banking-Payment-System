@@ -3,6 +3,7 @@ using DigitalBankingAPI.Models;
 using DigitalBankingAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace DigitalBankingAPI.Controllers;
 
@@ -116,5 +117,22 @@ public class AuthController : ControllerBase
             ExpiresIn = 3600,
             RefreshToken = newRefreshToken
         });
+    }
+    [HttpPost("Logout")]
+    public async Task<IActionResult> Logout(RefreshRequest request)
+    {
+        var tokenHash = _authService.HashRefreshToken(request.RefreshToken);
+        var storedToken = await _context.RefreshTokens
+            .FirstOrDefaultAsync(rt => rt.TokenHash == tokenHash);
+
+        if (storedToken == null || storedToken.IsRevoked)
+            return Unauthorized("Invalid or already revoke refresh token.");
+
+        storedToken.IsRevoked = true;
+        storedToken.RevokedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return Ok("Lagout successful.");
     }
 }
