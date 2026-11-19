@@ -4,8 +4,9 @@ GET {{DigitalBankingAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
-GET {{DigitalBankingAPI_HostAddress}}/api/accounts/2
-Accept: application/json 
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts/9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTQ5MzM3MjksImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.eM4Oc_xG99w3OhjYvHNlh7Il_L1PeDCIfU7C37HHnFw
+Accept: application/json
 ###
 GET {{DigitalBankingAPI_HostAddress}}/api/auth/test 
 Accept: application/json
@@ -66,9 +67,15 @@ Content-type: application/json
 }
 ### Create account for User A
 POST {{DigitalBankingAPI_HostAddress}}/api/accounts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTQ5MzMyMjAsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.JnBNqFCv7kVB--12hP-Dc-7h3eqKv_FzWEMxacsFiME
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTUwOTE3ODYsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.9j2udloJKWky1MsmT-JqfBGIK1qW5K4zDZYxa7Oy1bI
 Content-Type: application/json
 
 {
   "balance": 500
+}
+###
+POST {{DigitalBankingAPI_HostAddress}}/api/auth/refresh
+Content-Type: application/json
+{
+  "refreshToken" : "MZ9XEEP5IdLs1rXidIvFlJNT_NwukUO6X_LS2oCfYub-wInCC28leftCBbpqdKypWjAdXux1jV7VldEFHt1C-w"
 }

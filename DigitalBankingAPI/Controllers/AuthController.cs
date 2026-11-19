@@ -57,13 +57,64 @@ public class AuthController : ControllerBase
         if (!isPasswordValid)
             return Unauthorized("Invalid username or password.");
         var token = _authService.GenerateJwtToken(user);
-
+        var refreshToken = _authService.GenerateRefreshToken();
+        var refreshTokenHash = _authService.HashRefreshToken(refreshToken);
+        var refreshTokenRecord = new RefreshToken
+        {
+            UserId = user.Id,
+            TokenHash = refreshTokenHash,
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+            CreatedAt = DateTime.UtcNow,
+            IsRevoked = false
+        };
+        _context.RefreshTokens.Add(refreshTokenRecord);
+        await _context.SaveChangesAsync();
         return Ok(new
         {
             AccessToken = token,
             TokenType = "Bearer",
-            ExpiresIn = 3600
+            ExpiresIn = 3600,
+            RefreshToken = refreshToken
         });
 
+    }
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(RefreshRequest request)
+    {
+        var tokenHash = _authService.HashRefreshToken(request.RefreshToken);
+
+        var storedToken = await _context.RefreshTokens
+            .Include(rt => rt.User)
+            .FirstOrDefaultAsync(rt => rt.TokenHash == tokenHash);
+        if (storedToken == null)
+            return Unauthorized("Invalid refresh token.");
+        if (storedToken.IsRevoked || storedToken.ExpiresAt <= DateTime.UtcNow)
+            return Unauthorized("Refresh token is expired or revoked.");
+
+        var newAccessToken = _authService.GenerateJwtToken(storedToken.User);
+        var newRefreshToken = _authService.GenerateRefreshToken();
+        var newRefreshTokenHash = _authService.HashRefreshToken(newRefreshToken);
+        storedToken.IsRevoked = true;
+        storedToken.RevokedAt = DateTime.UtcNow;
+
+        var newRefreshTokenRecord = new RefreshToken
+        {
+            UserId = storedToken.UserId,
+            TokenHash = newRefreshTokenHash,
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+            CreatedAt = DateTime.UtcNow,
+            IsRevoked = false
+
+        };
+        _context.RefreshTokens.Add(newRefreshTokenRecord);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            AccessToken = newAccessToken,
+            TokenType = "Bearer",
+            ExpiresIn = 3600,
+            RefreshToken = newRefreshToken
+        });
     }
 }
