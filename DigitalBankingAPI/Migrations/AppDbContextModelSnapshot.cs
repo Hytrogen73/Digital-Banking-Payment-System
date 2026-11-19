@@ -70,6 +70,9 @@ namespace DigitalBankingAPI.Migrations
                     b.Property<DateTime?>("RevokedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("TokenFamilyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("TokenHash")
                         .IsRequired()
                         .HasMaxLength(64)

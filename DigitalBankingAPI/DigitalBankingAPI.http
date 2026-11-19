@@ -77,12 +77,26 @@ Content-Type: application/json
 POST {{DigitalBankingAPI_HostAddress}}/api/auth/refresh
 Content-Type: application/json
 {
-  "refreshToken" : "OlarziRrnaO_FtRVRqkMONQjaVufzlvUqyVbKpW72a8scz3Kx3NGKI2OQySJyYn6DhR4jIZddyUL17RyWUjkyA"
+  "refreshToken" : "CD0EegLyT9CzqWXeT8A1ddnCcn45yY5XbTfQ5W9n7fXXnVaFaOK07jF5kno997gvbEcu1dfE1sUGxsfxwj_h1A"
 }
 ### Logout
 POST {{DigitalBankingAPI_HostAddress}}/api/auth/logout
 Content-Type: application/json
 
 {
-    "refreshToken": "YOUR_REFRESH_TOKEN"
+    "refreshToken": "f8yxKZ8iOhYfnxq_92LbeHIFPWsNCJ46lAaY8KTv92Xb9_uBJRCnOsZgi5w0ZpRiYf2558vhg06ZGxCes0319g"
+}
+### Empty Refresh Token
+POST https://localhost:7223/api/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": ""
+}
+### Too Long Refresh Token
+POST https://localhost:7223/api/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 }

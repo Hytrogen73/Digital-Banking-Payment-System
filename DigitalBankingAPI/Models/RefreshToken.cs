@@ -13,4 +13,6 @@ public class RefreshToken
     public DateTime CreatedAt { get; set; }
     public DateTime? RevokedAt { get; set; } 
     public DateTime? UpdatedAt { get; set; }
+    public Guid TokenFamilyId { get; set; }
+
 }

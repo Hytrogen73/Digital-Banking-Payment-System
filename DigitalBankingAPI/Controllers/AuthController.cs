@@ -60,9 +60,11 @@ public class AuthController : ControllerBase
         var token = _authService.GenerateJwtToken(user);
         var refreshToken = _authService.GenerateRefreshToken();
         var refreshTokenHash = _authService.HashRefreshToken(refreshToken);
+        var tokenFamilyId = Guid.NewGuid();
         var refreshTokenRecord = new RefreshToken
         {
             UserId = user.Id,
+            TokenFamilyId = tokenFamilyId,
             TokenHash = refreshTokenHash,
             ExpiresAt = DateTime.UtcNow.AddDays(7),
             CreatedAt = DateTime.UtcNow,
@@ -89,8 +91,23 @@ public class AuthController : ControllerBase
             .FirstOrDefaultAsync(rt => rt.TokenHash == tokenHash);
         if (storedToken == null)
             return Unauthorized("Invalid refresh token.");
-        if (storedToken.IsRevoked || storedToken.ExpiresAt <= DateTime.UtcNow)
-            return Unauthorized("Refresh token is expired or revoked.");
+        if (storedToken.IsRevoked)
+        {
+            var activeTokens = await _context.RefreshTokens
+                .Where(rt => rt.TokenFamilyId == storedToken.TokenFamilyId && !rt.IsRevoked)
+                .ToListAsync();
+            foreach (var token in activeTokens)
+            {
+                token.IsRevoked = true;
+                token.RevokedAt = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Unauthorized("Refresh Token reuse detected. Session revoke.");
+        }
+        if ( storedToken.ExpiresAt <= DateTime.UtcNow)
+            return Unauthorized("Refresh token is expired.");
 
         var newAccessToken = _authService.GenerateJwtToken(storedToken.User);
         var newRefreshToken = _authService.GenerateRefreshToken();
@@ -102,6 +119,7 @@ public class AuthController : ControllerBase
         {
             UserId = storedToken.UserId,
             TokenHash = newRefreshTokenHash,
+            TokenFamilyId = storedToken.TokenFamilyId,
             ExpiresAt = DateTime.UtcNow.AddDays(7),
             CreatedAt = DateTime.UtcNow,
             IsRevoked = false
