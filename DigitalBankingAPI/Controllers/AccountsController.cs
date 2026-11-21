@@ -1,5 +1,5 @@
 ﻿using DigitalBankingAPI.DTOs.Requests;
-using DigitalBankingAPI.Services;
+using DigitalBankingAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +14,9 @@ public class AccountsController : ControllerBase
 {
 
 
-    private readonly AccountService _accountService;
+    private readonly IAccountService _accountService;
 
-    public AccountsController(AccountService accountService)
+    public AccountsController(IAccountService accountService)
     {
         _accountService = accountService;
     }

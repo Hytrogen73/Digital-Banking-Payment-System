@@ -1,8 +1,9 @@
 @DigitalBankingAPI_HostAddress = https://localhost:7223
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTUyNTUwMDQsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.yzNQ9_0MBbJ8r1J7nL5NndmP8EFGdv1bH_HLCWVi1Tk
-@refreshToken = xmvbb02cM3HyuQsmn9zLJLHadaC8NRsYEjT0dIFoS6wnS1t4Oehj87kcYcW4TmfUJOrzUcPthgVAfQ9TAA6o8Q
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTUyNjE3MDAsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.-SDzU66-s_byTJzIvU4660_c6uQzUt_h3xej44wX-RU
+@refreshToken = C90oarJMWm6ab7BEeDl0vr1rl8NyQLnlPoP_7fQkkPicq7KQrvQr4IBUhHTtZNrAs41646DBW0VvyspWmWSf1Q
 @accountId = 9
 @receiverAccountId = 10
+
 
 ### Weather Forecast
 GET {{DigitalBankingAPI_HostAddress}}/weatherforecast/
@@ -12,17 +13,14 @@ Accept: application/json
 GET {{DigitalBankingAPI_HostAddress}}/api/auth/test
 Accept: application/json
 
-### Login
-POST {{DigitalBankingAPI_HostAddress}}/api/auth/login
-Content-Type: application/json
 
-{
-    "username": "test_user_a",
-    "password": "AnotherPassword123!"
-}
 ### Get My Accounts
 GET {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}
 Authorization: Bearer {{token}}
+Accept: application/json
+### Get My Accounts oldToken 
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}
+Authorization: Bearer 
 Accept: application/json
 ### Deposit
 POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/deposit
@@ -108,3 +106,18 @@ Accept: application/json
 GET {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}
 Authorization: Bearer invalid_token
 Accept: application/json
+### Refresh Token After Refactoring
+POST {{DigitalBankingAPI_HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
+}
+### Login
+POST {{DigitalBankingAPI_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "test_user_a",
+    "password": "AnotherPassword123!"
+}

@@ -1,7 +1,7 @@
 ﻿using DigitalBankingAPI.Data;
 using DigitalBankingAPI.DTOs.Requests;
 using DigitalBankingAPI.Models;
-using DigitalBankingAPI.Services;
+using DigitalBankingAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -12,10 +12,10 @@ namespace DigitalBankingAPI.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
     private readonly AppDbContext _context;
 
-    public AuthController(AuthService authService, AppDbContext context)
+    public AuthController(IAuthService authService, AppDbContext context)
     {
         _authService = authService;
         _context = context;

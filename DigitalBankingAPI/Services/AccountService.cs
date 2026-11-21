@@ -1,11 +1,12 @@
 ﻿using DigitalBankingAPI.Data;
 using DigitalBankingAPI.DTOs.Responses;
 using DigitalBankingAPI.Models;
+using DigitalBankingAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalBankingAPI.Services;
 
-public class AccountService
+public class AccountService : IAccountService
 {
     private readonly AppDbContext _context;
 

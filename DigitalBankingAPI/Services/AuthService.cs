@@ -5,10 +5,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Security.Claims;
 using System.Text;
+using DigitalBankingAPI.Services.Interfaces;
 
 namespace DigitalBankingAPI.Services;
 
-public class AuthService
+public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
     private readonly PasswordHasher<User> _passwordHasher = new();
