@@ -120,12 +120,21 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost("{id}/transfer")]
-    public async Task<IActionResult> Transfer( int id, TransferRequest request)
+    public async Task<IActionResult> Transfer(int id, TransferRequest request)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (!int.TryParse(userIdClaim, out int userId))
             return Unauthorized();
+
+        string idempotencyKey =
+            Request.Headers["Idempotency-Key"].ToString();
+
+        if (string.IsNullOrWhiteSpace(idempotencyKey))
+            return BadRequest("Idempotency-Key header is required.");
+
+        if (idempotencyKey.Length > 100)
+            return BadRequest("Idempotency-Key cannot exceed 100 characters.");
 
         try
         {
@@ -133,13 +142,14 @@ public class AccountsController : ControllerBase
                 id,
                 request.ToAccountId,
                 userId,
-                request.Amount);
+                request.Amount,
+                idempotencyKey);
 
             return Ok(new
             {
                 Message = "Transfer successful.",
-                SenderBalance = result.Sender.Balance,
-                ReceiverBalance = result.Receiver.Balance
+                SenderBalance = result.SenderBalance,
+                ReceiverBalance = result.ReceiverBalance
             });
         }
         catch (ArgumentException ex)
@@ -152,7 +162,7 @@ public class AccountsController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(ex.Message);
+            return Conflict(ex.Message);
         }
         catch (DbUpdateConcurrencyException)
         {

@@ -3,6 +3,7 @@ using DigitalBankingAPI.DTOs.Responses;
 using DigitalBankingAPI.Models;
 using DigitalBankingAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace DigitalBankingAPI.Services;
 
@@ -79,28 +80,64 @@ public class AccountService : IAccountService
 
         return account;
     }
-    public async Task<(Account Sender, Account Receiver)> TransferAsync( int senderId, int receiverId, int userId, decimal amount)
+
+    public async Task<TransferResultDto> TransferAsync(
+        int senderId,
+        int receiverId,
+        int userId,
+        decimal amount,
+        string idempotencyKey)
     {
         if (senderId == receiverId)
             throw new ArgumentException("Cannot transfer to the same account.");
 
-        var sender = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == senderId && a.UserId == userId);
-
-        if (sender == null)
-            throw new KeyNotFoundException("Sender account not found.");
-
-        var receiver = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == receiverId);
-
-        if (receiver == null)
-            throw new KeyNotFoundException("Receiver account not found.");
-
         await using var transaction =
-            await _context.Database.BeginTransactionAsync();
+            await _context.Database.BeginTransactionAsync(
+                IsolationLevel.Serializable);
 
         try
         {
+         
+            var existingRequest = await _context.IdempotencyRecords
+                .FirstOrDefaultAsync(i =>
+                    i.UserId == userId &&
+                    i.IdempotencyKey == idempotencyKey);
+
+            if (existingRequest != null)
+            {
+            
+                if (existingRequest.SenderAccountId != senderId ||
+                    existingRequest.ReceiverAccountId != receiverId ||
+                    existingRequest.Amount != amount)
+                {
+                    throw new InvalidOperationException(
+                        "Idempotency key already used with a different request.");
+                }
+
+                await transaction.CommitAsync();
+
+               
+                return new TransferResultDto
+                {
+                    SenderBalance = existingRequest.SenderBalance,
+                    ReceiverBalance = existingRequest.ReceiverBalance
+                };
+            }
+
+           
+            var sender = await _context.Accounts.FirstOrDefaultAsync(
+                a => a.Id == senderId && a.UserId == userId);
+
+            if (sender == null)
+                throw new KeyNotFoundException("Sender account not found.");
+
+            var receiver = await _context.Accounts.FirstOrDefaultAsync(
+                a => a.Id == receiverId);
+
+            if (receiver == null)
+                throw new KeyNotFoundException("Receiver account not found.");
+
+     
             Guid transferReferenceId = Guid.NewGuid();
 
             sender.Withdraw(amount);
@@ -109,9 +146,9 @@ public class AccountService : IAccountService
 
             if (!result)
                 throw new ArgumentException(
-                    "Transfer amount must be greater than zero."
-                );
+                    "Transfer amount must be greater than zero.");
 
+          
             var senderTransaction = new Transaction(
                 sender.Id,
                 amount,
@@ -127,10 +164,30 @@ public class AccountService : IAccountService
             _context.Transactions.Add(senderTransaction);
             _context.Transactions.Add(receiverTransaction);
 
+          
+            var idempotencyRecord = new IdempotencyRecord
+            {
+                UserId = userId,
+                IdempotencyKey = idempotencyKey,
+                SenderAccountId = senderId,
+                ReceiverAccountId = receiverId,
+                Amount = amount,
+                SenderBalance = sender.Balance,
+                ReceiverBalance = receiver.Balance,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.IdempotencyRecords.Add(idempotencyRecord);
+
+            
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            return (sender, receiver);
+            return new TransferResultDto
+            {
+                SenderBalance = sender.Balance,
+                ReceiverBalance = receiver.Balance
+            };
         }
         catch
         {
@@ -138,6 +195,7 @@ public class AccountService : IAccountService
             throw;
         }
     }
+
     public async Task<TransactionHistoryResponseDto?> GetTransactionHistoryAsync( int accountId, int userId, int page,    int pageSize)
     {
         var account = await _context.Accounts.FirstOrDefaultAsync(

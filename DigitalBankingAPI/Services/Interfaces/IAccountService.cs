@@ -13,11 +13,12 @@ public interface IAccountService
 
     Task<Account?> WithdrawAsync(int accountId, int userId, decimal amount);
 
-    Task<(Account Sender, Account Receiver)> TransferAsync(
-        int senderId,
-        int receiverId,
-        int userId,
-        decimal amount);
+    Task<TransferResultDto> TransferAsync(
+     int senderId,
+     int receiverId,
+     int userId,
+     decimal amount,
+     string idempotencyKey);
 
     Task<TransactionHistoryResponseDto?> GetTransactionHistoryAsync(
         int accountId,

@@ -15,7 +15,7 @@ public class AppDbContext : DbContext
 
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     public DbSet<Transaction> Transactions { get; set; } = null!;
-
+    public DbSet<IdempotencyRecord> IdempotencyRecords { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -39,7 +39,24 @@ public class AppDbContext : DbContext
             .Property(r => r.TokenHash)
             .HasMaxLength(64)
             .IsRequired();
+        modelBuilder.Entity<IdempotencyRecord>(entity =>
+        {
+            entity.Property(i => i.IdempotencyKey)
+                .HasMaxLength(100)
+                .IsRequired();
 
+            entity.Property(i => i.Amount)
+                .HasPrecision(18, 2);
+
+            entity.Property(i => i.SenderBalance)
+                .HasPrecision(18, 2);
+
+            entity.Property(i => i.ReceiverBalance)
+                .HasPrecision(18, 2);
+
+            entity.HasIndex(i => new { i.UserId, i.IdempotencyKey })
+                .IsUnique();
+        });
         base.OnModelCreating(modelBuilder);
     }
 }

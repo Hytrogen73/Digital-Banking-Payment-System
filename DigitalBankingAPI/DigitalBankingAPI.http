@@ -1,6 +1,6 @@
 @DigitalBankingAPI_HostAddress = https://localhost:7223
-@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTUyNjE3MDAsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.-SDzU66-s_byTJzIvU4660_c6uQzUt_h3xej44wX-RU
-@refreshToken = C90oarJMWm6ab7BEeDl0vr1rl8NyQLnlPoP_7fQkkPicq7KQrvQr4IBUhHTtZNrAs41646DBW0VvyspWmWSf1Q
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTUyNjQ1MjIsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.SG1fWspQb1_K4e0gSNKIl7zah1XWqxqtAt74_XzDDB0
+@refreshToken = A1eE2C2GlLllqv0ZrHR-gBH4qSHI0gSN_POka6Zmq3vTJA4uvEzW4Z3pSbgEJAgz1sWXnZZgzqrcmJM_InzABQ
 @accountId = 9
 @receiverAccountId = 10
 
@@ -120,4 +120,30 @@ Content-Type: application/json
 {
     "username": "test_user_a",
     "password": "AnotherPassword123!"
+}
+### Logout
+POST {{DigitalBankingAPI_HostAddress}}/api/auth/logout
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
+}
+### Day 23 - First transfer
+### Day 23 - First transfer
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/9/transfer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "toAccountId": 10,
+    "amount": 10
+}
+### Missing Idempotency Key
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/9/transfer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "toAccountId": 10,
+    "amount": 10
 }
