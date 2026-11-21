@@ -56,5 +56,7 @@ public class Account
 
 
     }
+    public ICollection<Transaction> Transactions { get; private set; }
+    = new List<Transaction>();
 
 }

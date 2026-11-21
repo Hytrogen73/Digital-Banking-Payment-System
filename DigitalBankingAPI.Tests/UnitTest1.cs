@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using DigitalBankingAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using DigitalBankingAPI.DTOs.Requests;
 using Xunit;
 
 namespace DigitalBankingAPI.Tests;

@@ -1,4 +1,5 @@
 ﻿using DigitalBankingAPI.Data;
+using DigitalBankingAPI.DTOs.Requests;
 using DigitalBankingAPI.Models;
 using DigitalBankingAPI.Services;
 using Microsoft.AspNetCore.Mvc;

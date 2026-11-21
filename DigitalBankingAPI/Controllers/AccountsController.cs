@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using DigitalBankingAPI.Models;
-using DigitalBankingAPI.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using DigitalBankingAPI.DTOs.Requests;
+using DigitalBankingAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace DigitalBankingAPI.Controllers;
@@ -13,10 +13,12 @@ namespace DigitalBankingAPI.Controllers;
 public class AccountsController : ControllerBase
 {
 
-    private readonly AppDbContext _context;
-    public AccountsController(AppDbContext context)
+
+    private readonly AccountService _accountService;
+
+    public AccountsController(AccountService accountService)
     {
-        _context = context;
+        _accountService = accountService;
     }
 
     [HttpGet("{id}")]
@@ -26,12 +28,12 @@ public class AccountsController : ControllerBase
 
         if (!int.TryParse(userIdClaim, out int userId))
             return Unauthorized();
-        var account = await _context.Accounts.FirstOrDefaultAsync(
-        a => a.Id == id && a.UserId == userId);
+
+        var account = await _accountService.GetAccountAsync(id, userId);
+
         if (account == null)
-        {
             return NotFound();
-        }
+
         return Ok(account);
     }
 
@@ -42,11 +44,13 @@ public class AccountsController : ControllerBase
 
         if (!int.TryParse(userIdClaim, out int userId))
             return Unauthorized();
-        var account = new Account(userId, request.Balance);
-        _context.Accounts.Add(account);
-        await _context.SaveChangesAsync();
-        return StatusCode(201, account);
 
+        var account = await _accountService.CreateAccountAsync(
+            userId,
+            request.Balance
+        );
+
+        return StatusCode(201, account);
     }
 
     [HttpPost("{id}/deposit")]
@@ -56,21 +60,28 @@ public class AccountsController : ControllerBase
 
         if (!int.TryParse(userIdClaim, out int userId))
             return Unauthorized();
-        var account = await _context.Accounts.FirstOrDefaultAsync(
-        a => a.Id == id && a.UserId == userId);
 
-        if (account == null)
+        try
         {
-            return NotFound();
-        }
-        bool result = account.Deposit(request.Amount);
-        if (!result)
-        {
-            return BadRequest("Deposit amount must be greater than zero,");
-        }
-        await _context.SaveChangesAsync();
+            var account = await _accountService.DepositAsync(
+                id, userId, request.Amount
+            );
 
-        return Ok(result);
+            if (account == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                Message = "Deposit successful.",
+                AccountId = account.Id,
+                Amount = request.Amount,
+                Balance = account.Balance
+            });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost("{id}/withdraw")]
@@ -80,97 +91,96 @@ public class AccountsController : ControllerBase
 
         if (!int.TryParse(userIdClaim, out int userId))
             return Unauthorized();
-        var account = await _context.Accounts.FirstOrDefaultAsync(
-        a => a.Id == id && a.UserId == userId);
 
-        if (account == null)
-        {
-            return NotFound();
-        }
         try
         {
-            account.Withdraw(request.Amount);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+            var account = await _accountService.WithdrawAsync(
+                id, userId, request.Amount
+            );
 
-        await _context.SaveChangesAsync();
-        return Ok(account);
-
-    }
-
-    [HttpPost("{id}/transfer")]
-    public async Task<IActionResult> Transfer(int id, TransferRequest request)
-    {
-
-        if (id == request.ToAccountId)
-            return BadRequest("Cannot transfer to the same account.");
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        if (!int.TryParse(userIdClaim, out int userId))
-            return Unauthorized();
-        var sender = await _context.Accounts
-            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
-
-        if (sender == null)
-            return NotFound("Sender account not found.");
-
-
-        var receiver = await _context.Accounts
-            .FirstOrDefaultAsync(a => a.Id == request.ToAccountId);
-
-        if (receiver == null)
-            return NotFound("Receiver account not found.");
-
-
-        await using var transaction =
-            await _context.Database.BeginTransactionAsync();
-        try
-        {
-            sender.Withdraw(request.Amount);
-
-            bool result = receiver.Deposit(request.Amount);
-            if (!result)
-            {
-                await transaction.RollbackAsync();
-                return BadRequest("Transfer failed.");
-            }
-
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
+            if (account == null)
+                return NotFound();
 
             return Ok(new
             {
-                Message = "Transfer successful.",
-                SenderBalance = sender.Balance,
-                ReceiverBalance = receiver.Balance
+                Message = "Withdraw successful.",
+                AccountId = account.Id,
+                Amount = request.Amount,
+                Balance = account.Balance
             });
         }
         catch (ArgumentException ex)
         {
-            await transaction.RollbackAsync();
             return BadRequest(ex.Message);
         }
         catch (InvalidOperationException ex)
         {
-            await transaction.RollbackAsync();
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("{id}/transfer")]
+    public async Task<IActionResult> Transfer( int id, TransferRequest request)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!int.TryParse(userIdClaim, out int userId))
+            return Unauthorized();
+
+        try
+        {
+            var result = await _accountService.TransferAsync(
+                id,
+                request.ToAccountId,
+                userId,
+                request.Amount);
+
+            return Ok(new
+            {
+                Message = "Transfer successful.",
+                SenderBalance = result.Sender.Balance,
+                ReceiverBalance = result.Receiver.Balance
+            });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
             return BadRequest(ex.Message);
         }
         catch (DbUpdateConcurrencyException)
         {
-            await transaction.RollbackAsync();
-            return Conflict("Transfer failed becuase an account was modified by another transaction. Please try again.");
+            return Conflict(
+                "Transfer failed because an account was modified by another transaction. Please try again.");
         }
-        catch
+    }
+    [HttpGet("{id}/transactions")]
+    public async Task<IActionResult> GetTransactionHistory(int id, int page = 1,int pageSize = 10)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!int.TryParse(userIdClaim, out int userId))
+            return Unauthorized();
+
+        try
         {
-            await transaction.RollbackAsync();
-            throw;
+            var result = await _accountService.GetTransactionHistoryAsync(
+                id, userId, page, pageSize);
+
+            if (result == null)
+                return NotFound("Account not found.");
+
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 

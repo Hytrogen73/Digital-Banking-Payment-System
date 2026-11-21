@@ -4,6 +4,8 @@ using System.Text;
 using DigitalBankingAPI.Models;
 using Xunit;
 using System.ComponentModel.DataAnnotations;
+using DigitalBankingAPI.DTOs.Requests;
+
 
 namespace DigitalBankingAPI.Tests.Models;
 

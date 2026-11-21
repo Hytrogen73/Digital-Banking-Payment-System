@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DigitalBankingAPI.Models;
+namespace DigitalBankingAPI.DTOs.Requests;
 
 public class LoginRequest
 {

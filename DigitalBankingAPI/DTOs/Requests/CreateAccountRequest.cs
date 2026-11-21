@@ -1,4 +1,4 @@
-﻿namespace DigitalBankingAPI.Models;
+﻿namespace DigitalBankingAPI.DTOs.Requests;
 
 public class CreateAccountRequest
 {

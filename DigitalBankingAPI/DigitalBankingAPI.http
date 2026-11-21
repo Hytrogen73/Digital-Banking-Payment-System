@@ -1,102 +1,110 @@
 @DigitalBankingAPI_HostAddress = https://localhost:7223
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTUyNTUwMDQsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.yzNQ9_0MBbJ8r1J7nL5NndmP8EFGdv1bH_HLCWVi1Tk
+@refreshToken = xmvbb02cM3HyuQsmn9zLJLHadaC8NRsYEjT0dIFoS6wnS1t4Oehj87kcYcW4TmfUJOrzUcPthgVAfQ9TAA6o8Q
+@accountId = 9
+@receiverAccountId = 10
 
+### Weather Forecast
 GET {{DigitalBankingAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###
-GET {{DigitalBankingAPI_HostAddress}}/api/accounts/9
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTQ5MzM3MjksImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.eM4Oc_xG99w3OhjYvHNlh7Il_L1PeDCIfU7C37HHnFw
+### Authentication Test
+GET {{DigitalBankingAPI_HostAddress}}/api/auth/test
 Accept: application/json
-###
-GET {{DigitalBankingAPI_HostAddress}}/api/auth/test 
-Accept: application/json
-###
-POST {{DigitalBankingAPI_HostAddress}}/api/accounts
-Content-type: application/json
-{
-  "userId" : 1,
-  "balance": 200.00
-}
-###
-POST {{DigitalBankingAPI_HostAddress}}/api/accounts/2/deposit
-Content-Type: application/json
-{
-  "amount" : 50
-}
-###
-POST {{DigitalBankingAPI_HostAddress}}/api/accounts/2/withdraw
-Content-type: application/json
-{
-  "amount": 5000
-}
-### 
-POST {{DigitalBankingAPI_HostAddress}}/api/accounts/2/transfer
-Content-type: application/json 
-{
-  "toAccountId" : 3,
-  "amount" : 10
-}
-###
-POST {{DigitalBankingAPI_HostAddress}}/api/auth/register
-Content-type: application/json
-{
-  "username": "davith_test",
-  "password": "Banking123!"
-}
-###
-POST {{DigitalBankingAPI_HostAddress}}/api/auth/register
-Content-Type: application/json
 
-{
-  "username": "test_user_d",
-  "password": "AnotherPassword123!"
-}
-###
-POST {{DigitalBankingAPI_HostAddress}}/api/auth/register
-Content-type: application/json
-{
-  "username": "ab",
-  "password": "123"
-}
-###
+### Login
 POST {{DigitalBankingAPI_HostAddress}}/api/auth/login
-Content-type: application/json
-{
-  "username": "test_user_a",
-  "password": "AnotherPassword123!"
-}
-### Create account for User A
-POST {{DigitalBankingAPI_HostAddress}}/api/accounts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdF91c2VyX2EiLCJleHAiOjE3OTUwOTE3ODYsImlzcyI6IkRpZ2l0YWxCYW5raW5nQVBJIiwiYXVkIjoiRGlnaXRhbEJhbmtpbmdDbGllbnQifQ.9j2udloJKWky1MsmT-JqfBGIK1qW5K4zDZYxa7Oy1bI
 Content-Type: application/json
 
 {
-  "balance": 500
+    "username": "test_user_a",
+    "password": "AnotherPassword123!"
 }
-###
-POST {{DigitalBankingAPI_HostAddress}}/api/auth/refresh
-Content-Type: application/json
-{
-  "refreshToken" : "CD0EegLyT9CzqWXeT8A1ddnCcn45yY5XbTfQ5W9n7fXXnVaFaOK07jF5kno997gvbEcu1dfE1sUGxsfxwj_h1A"
-}
-### Logout
-POST {{DigitalBankingAPI_HostAddress}}/api/auth/logout
-Content-Type: application/json
-
-{
-    "refreshToken": "f8yxKZ8iOhYfnxq_92LbeHIFPWsNCJ46lAaY8KTv92Xb9_uBJRCnOsZgi5w0ZpRiYf2558vhg06ZGxCes0319g"
-}
-### Empty Refresh Token
-POST https://localhost:7223/api/auth/refresh
+### Get My Accounts
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+### Deposit
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/deposit
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "refreshToken": ""
+    "amount": 100
 }
-### Too Long Refresh Token
-POST https://localhost:7223/api/auth/refresh
+### Get Transaction History
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/transactions?page=1&pageSize=10
+Authorization: Bearer {{token}}
+Accept: application/json
+### Withdraw
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/withdraw
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "refreshToken": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    "amount": 50
 }
+### Test Insufficient Balance
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/withdraw
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "amount": 1000
+}
+### Successful Transfer
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/transfer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "toAccountId": {{receiverAccountId}},
+    "amount": 50
+}
+### Test Transfer - Insufficient Balance
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/transfer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "toAccountId": {{receiverAccountId}},
+    "amount": 1000
+}
+### Transfer to Same Account
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/transfer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "toAccountId": {{accountId}},
+    "amount": 50
+}
+### Transfer with Negative Amount
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/transfer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "toAccountId": {{receiverAccountId}},
+    "amount": -50
+}
+### Transfer to Nonexistent Account
+POST {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}/transfer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "toAccountId": 99999,
+    "amount": 50
+}
+### Access Another User's Account
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts/2
+Authorization: Bearer {{token}}
+Accept: application/json
+### Access Account Without Token
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}
+Accept: application/json
+### Invalid Access Token
+GET {{DigitalBankingAPI_HostAddress}}/api/accounts/{{accountId}}
+Authorization: Bearer invalid_token
+Accept: application/json
